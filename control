@@ -1,0 +1,10 @@
+Package: com.ps.ytunshorts
+Name: YTUnShorts
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Remove Shorts from YouTube app's feed.
+Maintainer: PoomSmart
+Author: PoomSmart
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 11.0), com.ps.ytreexplore
+Conflicts: com.ps.ytshortsprogress, com.miro.ytnoshorts
