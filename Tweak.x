@@ -1,9 +1,5 @@
 #import "../YouTubeHeader/YTIElementRenderer.h"
 
-BOOL didLateHook = NO;
-
-%group LateHook
-
 %hook YTIElementRenderer
 
 - (NSData *)elementData {
@@ -14,21 +10,3 @@ BOOL didLateHook = NO;
 }
 
 %end
-
-%end
-
-%hook YTSectionListViewController
-
-- (void)loadWithModel:(id)model {
-    if (!didLateHook) {
-        %init(LateHook);
-        didLateHook = YES;
-    }
-    %orig;
-}
-
-%end
-
-%ctor {
-    %init;
-}
