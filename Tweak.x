@@ -1,7 +1,5 @@
-#import <Foundation/Foundation.h>
+#import "../YouTubeHeader/YTIElementRenderer.h"
 
-@interface YTIElementRenderer : NSObject
-@end
 
 %hook YTIElementRenderer
 
