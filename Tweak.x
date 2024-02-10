@@ -1,4 +1,4 @@
-#import "../YouTubeHeader/YTIElementRenderer.h"
+#import <YouTubeHeader/YTIElementRenderer.h>
 
 
 %hook YTIElementRenderer
