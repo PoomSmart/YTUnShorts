@@ -1,6 +1,5 @@
 #import <YouTubeHeader/YTIElementRenderer.h>
 
-
 NSData *cellDividerData;
 
 %hook YTIElementRenderer
