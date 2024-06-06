@@ -15,7 +15,7 @@ NSData *cellDividerData;
     BOOL hasShorts = ([description containsString:@"shorts_shelf.eml"] || [description containsString:@"shorts_video_cell.eml"] || [description containsString:@"6Shorts"]) && ![description containsString:@"history*"];
     BOOL hasShortsInHistory = [description containsString:@"compact_video.eml"] && [description containsString:@"youtube_shorts_"];
 
-    if (hasShorts || hasShortsInHistory) return cellDividerData;
+    if ((hasShorts || hasShortsInHistory) && cellDividerData) return cellDividerData;
 
     return %orig;
 }
