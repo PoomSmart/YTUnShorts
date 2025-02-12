@@ -1,16 +1,39 @@
-#import <YouTubeHeader/YTIElementRenderer.h>
+#import <YouTubeHeader/YTIItemSectionRenderer.h>
+#import <YouTubeHeader/YTInnerTubeCollectionViewController.h>
+#import <YouTubeHeader/YTIShelfRenderer.h>
 
-%hook YTIElementRenderer
+static NSMutableArray <YTIItemSectionRenderer *> *filteredArray(NSArray <YTIItemSectionRenderer *> *array) {
+    NSMutableArray <YTIItemSectionRenderer *> *newArray = [array mutableCopy];
+    NSIndexSet *removeIndexes = [newArray indexesOfObjectsPassingTest:^BOOL(YTIItemSectionRenderer *sectionRenderer, NSUInteger idx, BOOL *stop) {
+        if ([sectionRenderer isKindOfClass:%c(YTIShelfRenderer)]) {
+            YTIShelfSupportedRenderers *content = ((YTIShelfRenderer *)sectionRenderer).content;
+            YTIHorizontalListRenderer *horizontalListRenderer = content.horizontalListRenderer;
+            NSMutableArray <YTIHorizontalListSupportedRenderers *> *itemsArray = horizontalListRenderer.itemsArray;
+            NSIndexSet *removeItemsArrayIndexes = [itemsArray indexesOfObjectsPassingTest:^BOOL(YTIHorizontalListSupportedRenderers *horizontalListSupportedRenderers, NSUInteger idx2, BOOL *stop2) {
+                YTIElementRenderer *elementRenderer = horizontalListSupportedRenderers.elementRenderer;
+                NSString *description = [elementRenderer description];
+                BOOL hasShorts = [description containsString:@"shorts_video_cell"];
+                if (hasShorts) *stop2 = YES;
+                return hasShorts;
+            }];
+            return removeItemsArrayIndexes.count > 0;
+        }
+        return NO;
+    }];
+    [newArray removeObjectsAtIndexes:removeIndexes];
+    return newArray;
+}
 
-- (NSData *)elementData {
-    NSString *description = [self description];
+%hook YTInnerTubeCollectionViewController
 
-    BOOL hasShorts = ([description containsString:@"shorts_shelf"] || [description containsString:@"shorts_video_cell"] || [description containsString:@"shorts_grid_shelf_footer"] || [description containsString:@"youtube_shorts_24"]);
-    BOOL hasShortsInHistory = [description containsString:@"compact_video.eml"] && [description containsString:@"youtube_shorts_"];
+- (void)displaySectionsWithReloadingSectionControllerByRenderer:(id)renderer {
+    NSMutableArray *sectionRenderers = [self valueForKey:@"_sectionRenderers"];
+    [self setValue:filteredArray(sectionRenderers) forKey:@"_sectionRenderers"];
+    %orig;
+}
 
-    if ((hasShorts || hasShortsInHistory)) return [NSData data];
-
-    return %orig;
+- (void)addSectionsFromArray:(NSArray <YTIItemSectionRenderer *> *)array {
+    %orig(filteredArray(array));
 }
 
 %end
