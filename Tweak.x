@@ -18,6 +18,11 @@ static NSMutableArray <YTIItemSectionRenderer *> *filteredArray(NSArray <YTIItem
             }];
             return removeItemsArrayIndexes.count > 0;
         }
+        if ([sectionRenderer isKindOfClass:%c(YTIItemSectionRenderer)]) {
+            NSString *description = [sectionRenderer description];
+            if ([description containsString:@"shorts_shelf.eml"])
+                return YES;
+        }
         return NO;
     }];
     [newArray removeObjectsAtIndexes:removeIndexes];
